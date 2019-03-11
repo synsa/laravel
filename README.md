@@ -72,6 +72,9 @@ set :laravel_migration_artisan_flags, "--force --env=#{fetch(:stage)}"
 # The version of laravel being deployed
 set :laravel_version, 5.3
 
+# Whether to upload the dotenv file on deploy
+set :laravel_upload_dotenv_file_on_deploy, true
+
 # Which dotenv file to transfer to the server
 set :laravel_dotenv_file, './.env'
 
@@ -133,8 +136,8 @@ The following tasks are added to your deploy automagically when adding capistran
 before 'deploy:starting', 'laravel:resolve_linked_dirs'
 before 'deploy:starting', 'laravel:resolve_acl_paths'
 after  'deploy:starting', 'laravel:ensure_linked_dirs_exist'
-after  'deploy:starting', 'laravel:ensure_acl_paths_exist'
-after  'deploy:updating', 'deploy:set_permissions:acl'
+before 'deploy:updating', 'laravel:ensure_acl_paths_exist'
+before 'deploy:updated',  'deploy:set_permissions:acl'
 before 'composer:run',    'laravel:upload_dotenv_file'
 after  'composer:run',    'laravel:storage_link'
 after  'composer:run',    'laravel:optimize'
