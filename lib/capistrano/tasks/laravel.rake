@@ -183,7 +183,8 @@ namespace :laravel do
 
   desc 'Optimize the framework for better performance.'
   task :optimize do
-    Rake::Task['laravel:artisan'].invoke(:optimize, '--force')
+    next if fetch(:laravel_version) >= 5.5
+    Rake::Task['laravel:artisan'].invoke('storage:link')
   end
 
   desc 'Create a symbolic link from "public/storage" to "storage/app/public."'
